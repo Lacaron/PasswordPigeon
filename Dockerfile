@@ -13,7 +13,7 @@ COPY backend ./backend/
 COPY frontend ./frontend/
 
 # Expose the port
-EXPOSE 3000
+EXPOSE 80
 
 # Start the server
 CMD ["node", "backend/server.js"]
