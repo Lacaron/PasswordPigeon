@@ -24,37 +24,31 @@
 
     <div class="flex justify-center flex-1 px-4 mt-10">
         <div class="w-full max-w-[1200px]">
-            <div class="rounded-3xl border-2 border-blue-200  bg-blue-50 p-8">
+            <div class="rounded-3xl border-2 border-blue-200 bg-blue-50 p-8">
                 <h1 class="text-4xl text-center p-8">Passphrase Generator</h1>
-                <div class="flex">
-                    <div class="w-1/4 rounded-3xl border-2 border-white-200 bg-blue-100 p-8 m-4">
+                <div class="flex flex-col lg:flex-row">
+                    <div class="w-full lg:w-1/4 rounded-3xl border-2 border-white-200 bg-blue-100 p-8 m-4">
                         <h2 class="text-lg font-bold mb-2">Generate strong, unique memorable passwords</h2>
-
                         <label id="sliderValue" class="mb-2">Password Length: 4</label>
                         <input type="range" id="passwordLength" min="2" max="10" value="4" class="w-full mb-4" />
-
-
                         <div class="flex items-center mb-4">
                             <input type="checkbox" id="capitalLetters" class="mr-2" checked />
                             <label for="capitalLetters">Capital letters</label>
                         </div>
-
                         <div class="flex items-center mb-4">
                             <input type="checkbox" id="numbers" class="mr-2" checked />
                             <label for="numbers">Numbers</label>
                         </div>
-
                         <label for="inputSeparator">Separators</label>
                         <select class="w-full border rounded-md p-2" id="inputSeparator">
                             <option value="Hyphens">Hyphens</option>
                         </select>
                     </div>
-
-                    <div
-                        class="w-1/2 rounded-3xl border-2 border-white-200 bg-blue-100 p-8 mx-2 flex flex-col items-center justify-center m-4">
+    
+                    <div class="w-full lg:w-1/2 rounded-3xl border-2 border-white-200 bg-blue-100 p-8 mx-2 flex flex-col items-center justify-center m-4">
                         <p class="text-lg font-semibold text-center mb-8" id="passphraseDisplay">Centered Text</p>
                         <div>
-                            <button  id="regenerateButton" class="mt-2 bg-blue-500 text-white rounded-md px-4 py-2 hover:bg-blue-600">
+                            <button id="regenerateButton" class="mt-2 bg-blue-500 text-white rounded-md px-4 py-2 hover:bg-blue-600">
                                 Regenerate
                             </button>
                             <button id="copyButton" class="mt-2 bg-blue-500 text-white rounded-md px-4 py-2 hover:bg-blue-600">
@@ -62,14 +56,14 @@
                             </button>
                         </div>
                     </div>
-
-                    <div class="w-1/4 rounded-3xl border-2 border-white-200 bg-blue-100 p-8 m-4">
+    
+                    <div class="w-full lg:w-1/4 rounded-3xl border-2 border-white-200 bg-blue-100 p-8 m-4">
                         <h2 class="text-lg font-bold mb-4">Security Score</h2>
                         🚧🚧🚧
-                        <div class="w-full bg-gray-200 rounded-full  mb-4 hidden"> // HIDDEN
+                        <div class="w-full bg-gray-200 rounded-full mb-4 hidden"> // HIDDEN
                             <div id="scoreBar" class="bg-green-500 h-4 rounded-full" style="width: 0%;"></div>
                         </div>
-                        <p class="mt-2  mb-4 hidden"> // HIDDEN
+                        <p class="mt-2 mb-4 hidden"> // HIDDEN
                             <span id="scoreText" class="text-green-500">?</span> to hack this password
                         </p>
                     </div>
@@ -77,12 +71,14 @@
             </div>
         </div>
     </div>
+    
+    
 
     <div class="flex justify-center flex-1 px-4 mt-40">
         <div class="w-full max-w-[1200px]">
             <!-- Article 1 -->
-            <div class="flex mb-8">
-                <div class="w-1/2 pr-4 m-4">
+            <div class="flex flex-col lg:flex-row mb-8">
+                <div class="w-full lg:w-1/2 pr-4 m-4 order-2 lg:order-1">
                     <h3 class="text-xl font-bold">How can I create a strong password?</h3>
                     <p>A password generator is essential to creating strong and unique passwords. A good password
                         generator should:</p>
@@ -91,14 +87,14 @@
                         Sloppily8-Rosy3-Unlocking8-Angelic4 is made up of unrelated words and is easier to type and
                         remember.</p>
                 </div>
-                <div class="w-1/2 rounded-3xl h-auto border-2 border-blue-200 bg-blue-50 p-4">
+                <div class="w-full lg:w-1/2  order-1 lg:order-2 rounded-3xl h-auto border-2 border-blue-200 bg-blue-50 p-4">
                     <img src="./resources/banana.png" alt="Image 1" class="w-full h-auto" />
                 </div>
             </div>
 
             <!-- Article 2 -->
-            <div class="flex mb-8">
-                <div class="w-1/2 pr-4 m-4 order-2 ">
+            <div class="flex flex-col lg:flex-row mb-8">
+                <div class="w-full lg:w-1/2 pr-4 m-4 order-2 lg:order-2 ">
                     <h3 class="text-xl font-bold">What makes a password strong?</h3>
                     <p>A strong password is one that is difficult to guess or crack. It should have these
                         characteristics:</p>
@@ -109,7 +105,7 @@
                         strong your password is, if a website gets hacked, a bad actor can use the same password to gain
                         access to another account.</p>
                 </div>
-                <div class="w-1/2 order-1 rounded-3xl h-auto border-2 border-blue-200 bg-blue-50 p-4">
+                <div class="w-full lg:w-1/2 order-1 lg:order-1 rounded-3xl h-auto border-2 border-blue-200 bg-blue-50 p-4">
                     <img src="./resources/banana.png" alt="Image 2" class="w-full h-auto" />
                 </div>
             </div>
