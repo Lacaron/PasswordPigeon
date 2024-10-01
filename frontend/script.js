@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-    const updateScore = (passphrase) => {
+    const updateScore = async (passphrase) => {
         // Calculate score
         const score = new passphraseScoring(passphrase);
 
@@ -115,6 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         updateScoreGraph(percentage, color);
         updateScoreText(time, color);
+        console.log("breach? ", await score.checkBreach(passphrase));
     }
 
     const generatePassphrase = () => {
@@ -188,32 +189,6 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
-const calculateScore = (passphrase) => {
-    // Returns a score from 0 to 100
-
-    // Calculate passphrase entropy
-    const entropy = calculatePasswordEntropy(passphrase);
-    const maxGuesses = calculateMaxGuesses(entropy);
-
-    const timeInSeconds = calculateCrackTime(maxGuesses);
-
-    // Convert seconds to more readable formats
-    const seconds = Math.floor(timeInSeconds);
-    const minutes = Math.floor(seconds / 60);
-    const hours = Math.floor(minutes / 60);
-    const days = Math.floor(hours / 24);
-    const years = Math.floor(days / 365);
-
-    // Format the max guesses for readability
-    const formattedMaxGuesses = maxGuesses.toLocaleString();
-
-    console.log(`Entropy: ${entropy}`);
-    console.log(`Maximum Guesses: ${formattedMaxGuesses}`);
-    console.log(`Time to crack: ${seconds.toLocaleString()} seconds (${minutes.toLocaleString()} minutes, ${hours.toLocaleString()} hours, ${days.toLocaleString()} days, ${years.toLocaleString()} years)`);
-
-}
-
-
 
 
 
@@ -257,15 +232,15 @@ class passphraseScoring {
 
         const entropy = this.calculatePasswordEntropy(passphrase)
         const maxGuesses = Math.pow(2, entropy);
-        
-        
+
+
         console.log("entropy", entropy);
         console.log("maxGuesses", maxGuesses);
         console.log(maxGuesses);
 
         const timeInSeconds = Number(maxGuesses) / Number(this.guessesPerSecond);
-        
-        console.log("timeInSeconds", timeInSeconds/2);
+
+        console.log("timeInSeconds", timeInSeconds / 2);
         return timeInSeconds / 2; // On average it takes half the time to crack a password
     }
 
@@ -294,6 +269,92 @@ class passphraseScoring {
         // console.log(`Maximum Guesses: ${formattedMaxGuesses}`);
         // console.log(`Time to crack: ${seconds.toLocaleString()} seconds (${minutes.toLocaleString()} minutes, ${hours.toLocaleString()} hours, ${days.toLocaleString()} days, ${years.toLocaleString()} years)`);
         return 0;
+    }
+
+    checkBreach = async (passphrase) => {
+
+
+        // Hash the passphrase using SHA-1
+        const hash = CryptoJS.SHA1(passphrase).toString();
+
+        // Extract prefix and postfix
+        const prefix = hash.substring(0, 5);
+        const postfix = hash.substring(5);
+
+        // Send the prefix to a URL with a CORS proxy
+        const url = '/api/breach/' + prefix; // Replace with your URL
+        let response;
+
+        try {
+            response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (!response.ok) throw new Error('Network response was not ok.');
+
+            const responseText = await response.text();
+
+            // Check if the postfix exists in the response list
+            const list = responseText
+                .trim() // Remove any leading or trailing whitespace
+                .split('\r\n') // Split the string into lines
+                .map(line => line.split(':')[0]); // Extract the first part of each line
+
+            const postfixExists = list.includes(postfix.toUpperCase());
+
+
+            return postfixExists;
+
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+}
+
+
+
+
+async function checkIsBreached(password) {
+
+    // Hash the password using SHA-1
+    const hash = CryptoJS.SHA1(password).toString();
+
+    // Extract prefix and postfix
+    const prefix = hash.substring(0, 5);
+    const postfix = hash.substring(5);
+
+    // Send the prefix to a URL with a CORS proxy
+    const url = 'https://cors-anywhere.herokuapp.com/' + 'https://api.pwnedpasswords.com/range/' + prefix; // Replace with your URL
+    let response;
+
+    try {
+        response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (!response.ok) throw new Error('Network response was not ok.');
+
+        const responseText = await response.text();
+
+        // Check if the postfix exists in the response list
+        const list = responseText
+            .trim() // Remove any leading or trailing whitespace
+            .split('\r\n') // Split the string into lines
+            .map(line => line.split(':')[0]); // Extract the first part of each line
+
+        const postfixExists = list.includes(postfix.toUpperCase());
+
+
+        return !postfixExists;
+
+    } catch (error) {
+        console.error('Error:', error);
     }
 }
 
@@ -365,12 +426,6 @@ class Passphrase {
 
 
 
-// fetch('/api/hello')
-//     .then(response => response.json())
-//     .then(data => {
-//         console.log(data.message); // Log the message from the API
-//         // You can update the DOM or handle the data as needed
-//     })
-//     .catch(error => console.error('Error fetching the API:', error));
+
 
 
