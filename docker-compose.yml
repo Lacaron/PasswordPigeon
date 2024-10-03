@@ -1,8 +1,10 @@
 version: '3'
 services:
-  web:
+  passwordpigeon:
+    container_name: passwordpigeon
     build: .
     ports:
       - "80:80"
     environment:
       NODE_ENV: development
+    restart: unless-stopped
