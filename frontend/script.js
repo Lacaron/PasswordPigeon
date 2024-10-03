@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 throw new Error('Network response was not ok');
             }
             const data = await response.text();
-            frenchWords = data.split('\r\n').filter(word => word.trim() !== '');
+            frenchWords = data.split('\n').filter(word => word.trim() !== '');
         } catch (error) {
             console.error('Error fetching the file:', error);
         }
