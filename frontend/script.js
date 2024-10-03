@@ -62,59 +62,35 @@ document.addEventListener('DOMContentLoaded', () => {
         scoreBar.className = 'bg-' + color + '-500 h-4 rounded-full';
     }
 
-    const updateScoreText = (time, color) => {
-        let text = "?";
-
-        // textes
-        if (time > 31557600000) { // At least 1 tousand years
-            text = "Thousands of years"
-        }
-        if (time > 3155760000) { // At least 1 century 
-            text = "Centuries"
-        }
-        else if (time > 31557600) { // At least 1 Years
-            text = "years"
-        }
-        else if (time > 2629800) { // At least 1 Months
-            text = "Months"
-        }
-        else if (time > 604800) { // At least 1 Week
-            text = "Weeks"
-        }
-        else if (time > 3600) { // At least 1 Hour
-            text = "Hours"
-        }
-        else if (time > 60) { // At least 1 Minute
-            text = "Minutes"
-        }
-        else { // At least 1 second
-            text = "A few seconds"
-        }
-
-        scoreText.textContent = text;
-        scoreText.className = 'text-' + color + '-500';
-    }
-
-
-
     const updateScore = async (passphrase) => {
         // Calculate score
-        const score = new passphraseScoring(passphrase);
+        const passphraseScore = new passphraseScoring();
 
-        let percentage = score.score;
-        let time = score.calculatedCrackTime;
+        let score = passphraseScore.calculateScore(passphrase);
+        let time = passphraseScore.calculateCrackTime(passphrase);
         let color = '';
 
-        if (percentage < 60) {
+        if (score < 60) {
             color = 'red';
-        } else if (percentage < 90) {
+        } else if (score < 90) {
             color = 'orange';
         } else {
             color = 'green';
         }
+        // 0: { score: "very weak", style: { color: "red" } },
+        // 1: { score: "very weak", style: { color: "red" } },
+        // 2: { score: "weak", style: { color: "orange" } },
+        // 3: { score: "good", style: { color: "blue" } },
+        // 4: { score: "strong", style: { color: "green" } },
 
-        updateScoreGraph(percentage, color);
-        updateScoreText(time, color);
+        // updateScoreGraph(percentage, color);
+        scoreBar.style.width = score + '%';
+        scoreBar.className = 'bg-' + color + '-500 h-4 rounded-full';
+        
+        // updateScoreText
+        scoreText.textContent = time;
+        scoreText.className = 'text-' + color + '-500';
+
         console.log("breach? ", await score.checkBreach(passphrase));
     }
 
@@ -194,12 +170,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 class passphraseScoring {
-    constructor(passphrase) {
-        this.passphrase = passphrase;
-        this.guessesPerSecond = 1000000000000000000000000000n;
-        this.entropy = this.calculatePasswordEntropy(this.passphrase)
-        this.calculatedCrackTime = this.calculateCrackTime(this.passphrase)
-        this.score = this.calculateScore()
+    constructor() {
+
     }
 
     calculatePasswordEntropy = (passphrase) => {
@@ -228,47 +200,90 @@ class passphraseScoring {
     }
 
     calculateCrackTime = (passphrase) => {
-        // Calculate time in seconds
+        // Determine the range of character types in the password
+        const ranges = {
+            numerics: 10,    // 0-9
+            lowercase: 26,    // a-z
+            uppercase: 26,    // A-Z
+            special: 32       // !, @, %, $
+        };
 
-        const entropy = this.calculatePasswordEntropy(passphrase)
-        const maxGuesses = Math.pow(2, entropy);
+        let range = 0;
 
+        // Check for the presence of different character types
+        if (/[0-9]/.test(passphrase)) range += ranges.numerics;
+        if (/[a-z]/.test(passphrase)) range += ranges.lowercase;
+        if (/[A-Z]/.test(passphrase)) range += ranges.uppercase;
+        // Check for special characters explicitly
+        if (/[-_!@#$%^&*(),.?":{}|<> ]/.test(passphrase)) {
+            range += ranges.special;
+        }
+        console.log("range", range)
 
-        console.log("entropy", entropy);
-        console.log("maxGuesses", maxGuesses);
-        console.log(maxGuesses);
+        // Calculate entropy: E = L × log2(R)
+        const entropy = Math.floor(passphrase.length * Math.log2(range));
+        console.log("entropy", entropy)
 
-        const timeInSeconds = Number(maxGuesses) / Number(this.guessesPerSecond);
+        // Calculate time to crack
+        const guessesPerSecond = 1e9; // 1 billion guesses per second
+        const timeToCrackSeconds = Math.pow(2, entropy) / guessesPerSecond;
+        console.log("timeToCrackSeconds", timeToCrackSeconds)
 
-        console.log("timeInSeconds", timeInSeconds / 2);
-        return timeInSeconds / 2; // On average it takes half the time to crack a password
+        // Convert seconds to a readable format
+        function formatTime(seconds) {
+            const units = [
+                { label: "Thousands of years", seconds: 3.15576e+9 * 1000 },
+                { label: "centuries", seconds: 3.15576e+9 * 100 },
+                { label: "years", seconds: 3.15576e+9 },
+                { label: "months", seconds: 2.62974e+6 },
+                { label: "weeks", seconds: 604800 },
+                { label: "days", seconds: 86400 },
+                { label: "hours", seconds: 3600 },
+                { label: "minutes", seconds: 60 },
+                { label: "seconds", seconds: 1 },
+            ];
+
+            for (let { label, seconds: unitSeconds } of units) {
+                const time = Math.floor(seconds / unitSeconds);
+                if (time > 0) {
+                    return `${label}`;
+                }
+                seconds %= unitSeconds;
+            }
+            return "less than a second"; // If all else fails
+        }
+
+        const estimatedTime = formatTime(timeToCrackSeconds);
+        console.log("estimatedTime", estimatedTime)
+
+        return estimatedTime;
     }
 
     // Returns a score from 0 to 100
-    calculateScore = () => {
+    calculateScore = (passphrase) => {
+        let range = 0;
 
+        // Determine the range of character types in the password
+        const ranges = {
+            numerics: 1,    // 0-9
+            lowercase: 1,    // a-z
+            uppercase: 1,    // A-Z
+            special: 1,      // !, @, %, $
+            minLength: 1
+        };
+        const maxRange = 5;
 
+        // Check for the presence of different character types
+        if (/[0-9]/.test(passphrase)) range += ranges.numerics;
+        if (/[a-z]/.test(passphrase)) range += ranges.lowercase;
+        if (/[A-Z]/.test(passphrase)) range += ranges.uppercase;
+        if (/[-_!@#$%^&*(),.?":{}|<> ]/.test(passphrase)) range += ranges.special;
+        if (/^.{12,}$/.test(passphrase)) range += ranges.minLength;
 
-        // // Calculate passphrase entropy
-        // const entropy = calculatePasswordEntropy(passphrase);
-        // const maxGuesses = calculateMaxGuesses(entropy);
+        const score = (range / maxRange) * 100
+        console.log("score", score)
 
-        // const timeInSeconds = calculateCrackTime(maxGuesses);
-
-        // // Convert seconds to more readable formats
-        // const seconds = Math.floor(timeInSeconds);
-        // const minutes = Math.floor(seconds / 60);
-        // const hours = Math.floor(minutes / 60);
-        // const days = Math.floor(hours / 24);
-        // const years = Math.floor(days / 365);
-
-        // // Format the max guesses for readability
-        // const formattedMaxGuesses = maxGuesses.toLocaleString();
-
-        // console.log(`Entropy: ${entropy}`);
-        // console.log(`Maximum Guesses: ${formattedMaxGuesses}`);
-        // console.log(`Time to crack: ${seconds.toLocaleString()} seconds (${minutes.toLocaleString()} minutes, ${hours.toLocaleString()} hours, ${days.toLocaleString()} days, ${years.toLocaleString()} years)`);
-        return 0;
+        return score;
     }
 
     checkBreach = async (passphrase) => {
