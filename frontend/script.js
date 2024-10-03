@@ -91,7 +91,33 @@ document.addEventListener('DOMContentLoaded', () => {
         scoreText.textContent = time;
         scoreText.className = 'text-' + color + '-500';
 
-        console.log("breach? ", await score.checkBreach(passphrase));
+        console.log("breach? ", await passphraseScore.checkBreach(passphrase));
+    }
+
+    function colorizeString(input) {
+        // Regular expressions for identifying character types
+        const uppercaseRegex = /[A-Z]/;
+        const numberRegex = /[0-9]/;
+        const specialCharRegex = /[-_!@#$%^&*(),.?":{}|<> ]/;
+    
+        // Map each character to a span with the appropriate color
+        const coloredString = Array.from(input).map(char => {
+            let className = '';
+    
+            if (uppercaseRegex.test(char)) {
+                className = 'text-yellow-500'; // Green for uppercase letters
+            } else if (numberRegex.test(char)) {
+                className = 'text-blue-500'; // Blue for numbers
+            } else if (specialCharRegex.test(char)) {
+                className = 'text-orange-500'; // Orange for special characters
+            } else {
+                className = 'text-black'; // Default color for lowercase letters and spaces
+            }
+    
+            return `<span class="${className}">${char}</span>`;
+        }).join('');
+    
+        return coloredString;
     }
 
     const generatePassphrase = () => {
@@ -104,7 +130,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let passphrase = generator.generatePassphrase();
 
-        passphraseDisplay.textContent = passphrase;
+        passphrase = colorizeString(passphrase);
+
+        passphraseDisplay.innerHTML = passphrase;
+
         updateScore(passphrase);
     }
 
