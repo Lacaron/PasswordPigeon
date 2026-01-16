@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="fr">
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>Générateur de mot de passe</title>
+	<link rel="stylesheet" href="styles.css">
+
+</head>
+<script src="script.js" defer></script>
+
+<body>
+	<div class="app">
+		<h1>Générateur de mot de passe</h1>
+		<p class="muted">Toujours offline. Toujours sans trackers. Toujours plus utile que la plupart des apps.</p>
+
+		<div class="panel">
+			<div class="label">Mot de passe</div>
+			<div id="out" class="pwd">...</div>
+		</div>
+
+		<div class="panel">
+			<div class="label">Stats</div>
+			<div class="toggle-row" style="gap: 1rem;">
+				<div><strong>Longueur:</strong> <span id="len">0</span></div>
+				<div><strong>Entropie:</strong> <span id="entropy">0</span> bits</div>
+			</div>
+		</div>
+
+		<div class="panel">
+			<div class="group">
+				<div class="label">Dictionnaire</div>
+				<div class="toggle-row" role="radiogroup" aria-label="Dictionnaire">
+					<input type="radio" name="lang" id="lang-fr" value="fr" checked>
+					<label class="pill" for="lang-fr">Français</label>
+
+					<input type="radio" name="lang" id="lang-en" value="en">
+					<label class="pill" for="lang-en">English</label>
+				</div>
+			</div>
+
+			<div class="group">
+				<div class="label">Nombre de mots</div>
+				<div class="toggle-row" role="radiogroup" aria-label="Nombre de mots">
+					<input type="radio" name="count" id="c3" value="3">
+					<label class="pill" for="c3">3</label>
+
+					<input type="radio" name="count" id="c4" value="4" checked>
+					<label class="pill" for="c4">4</label>
+
+					<input type="radio" name="count" id="c5" value="5">
+					<label class="pill" for="c5">5</label>
+
+					<input type="radio" name="count" id="c6" value="6">
+					<label class="pill" for="c6">6</label>
+				</div>
+			</div>
+
+			<div class="group">
+				<div class="label">Séparateur</div>
+				<div class="toggle-row" role="radiogroup" aria-label="Séparateur">
+					<input type="radio" name="sep" id="s-" value="-" checked>
+					<label class="pill" for="s-">-</label>
+
+					<input type="radio" name="sep" id="s_" value="_">
+					<label class="pill" for="s_">_</label>
+
+					<input type="radio" name="sep" id="splus" value="+">
+					<label class="pill" for="splus">+</label>
+
+					<input type="radio" name="sep" id="seq" value="=">
+					<label class="pill" for="seq">=</label>
+
+					<input type="radio" name="sep" id="scomma" value=",">
+					<label class="pill" for="scomma">,</label>
+
+					<input type="radio" name="sep" id="sdot" value=".">
+					<label class="pill" for="sdot">.</label>
+				</div>
+			</div>
+
+			<div class="group">
+				<div class="label">Options</div>
+				<div class="toggle-row" aria-label="Options">
+					<!-- checked = activé par défaut -->
+					<input type="checkbox" id="nums" checked>
+					<label class="pill" for="nums">Numéro après chaque mot (0–9)</label>
+
+					<input type="checkbox" id="caps" checked>
+					<label class="pill" for="caps">Majuscule initiale</label>
+				</div>
+			</div>
+
+			<div class="actions">
+				<button id="gen">Générer un nouveau mdp</button>
+				<button id="copy" type="button">Copier</button>
+				<span id="status" class="status"></span>
+			</div>
+		</div>
+
+	</div>
+</body>
+
+</html>
