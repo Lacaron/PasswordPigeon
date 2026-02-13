@@ -25,28 +25,7 @@ Il permet de générer des mots de passe lisibles et robustes en combinant plusi
 
 ## Sources des dictionnaires
 
-### Dictionnaire français
-
-- **Liste de mots français – Gutenberg**
-- Source :  
-  https://github.com/chrplr/openlexicon/tree/master/datasets-info/Liste-de-mots-francais-Gutenberg
-- Licence : **CC-BY-SA 4.0**
-- Modifications appliquées dans ce projet :
-  - Suppression des accents
-  - Conversion en minuscules
-  - Filtrage par longueur minimale et maximale
-  - Suppression des caractères non alphabétiques
-
-### Dictionnaire anglais
-
-- **English Words**
-- Source :  
-  https://github.com/dwyl/english-words
-- Licence : **Aucune licence explicitement fournie**
-- Utilisation :
-  - Liste brute de mots anglais
-  - Filtrage et normalisation appliqués côté application
-
+- merci Philippe
 ---
 
 ## Notes sur la sécurité et l’entropie
@@ -78,3 +57,4 @@ Aucun backend requis.
 Le projet peut être exécuté via :
 - un serveur statique local (ex. `python -m http.server`)
 - ou un hébergement statique (GitHub Pages, Netlify, etc.)
+
