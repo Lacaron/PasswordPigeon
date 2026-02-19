@@ -12,14 +12,20 @@
 
 <body>
 	<div class="app">
+	
+		<img src="logo.svg" alt="Logo de l'entreprise" class="logo" />
+	
 		<h1>Générateur de mot de passe</h1>
-		<p class="muted">Toujours offline.</p>
 
 		<div class="panel">
 			<div class="label">Mot de passe</div>
-			<div id="out" class="pwd">...</div>
+			<div class="pwd-box">
+				<div id="out" class="pwd hiddentext">...</div>
+				<button id="cacherpwd" type="button">Révéler</button>
+
+			</div>
 			<div class="actions">
-				<button id="gen">Générer un nouveau mdp</button>
+				<button id="gen">Générer un nouveau mot de passe</button>
 				<button id="copy" type="button">Copier</button>
 				<span id="status" class="status"></span>
 			</div>
@@ -28,8 +34,8 @@
 		<div class="panel">
 			<div class="label">Stats</div>
 			<div class="toggle-row" style="gap: 1rem;">
-				<div><strong>Longueur:</strong> <span id="len">0</span></div>
-				<div><strong>Entropie:</strong> <span id="entropy">0</span> bits</div>
+				<div><strong>Longueur :</strong> <span id="len">0</span></div>
+				<div><strong>Entropie :</strong> <span id="entropy">0</span> bits</div>
 			</div>
 		</div>
 
@@ -48,10 +54,13 @@
 			<div class="group">
 				<div class="label">Nombre de mots</div>
 				<div class="toggle-row" role="radiogroup" aria-label="Nombre de mots">
-					<input type="radio" name="count" id="c3" value="3">
+					<input type="radio" name="count" id="c2" value="2">
+					<label class="pill" for="c2">2</label>
+
+					<input type="radio" name="count" id="c3" value="3" checked>
 					<label class="pill" for="c3">3</label>
 
-					<input type="radio" name="count" id="c4" value="4" checked>
+					<input type="radio" name="count" id="c4" value="4">
 					<label class="pill" for="c4">4</label>
 
 					<input type="radio" name="count" id="c5" value="5">
@@ -90,7 +99,7 @@
 				<div class="toggle-row" aria-label="Options">
 					<!-- checked = activé par défaut -->
 					<input type="checkbox" id="nums" checked>
-					<label class="pill" for="nums">Numéro après chaque mot (0–9)</label>
+					<label class="pill" for="nums">Chiffre après chaque mot (0–9)</label>
 
 					<input type="checkbox" id="caps" checked>
 					<label class="pill" for="caps">Majuscule initiale</label>

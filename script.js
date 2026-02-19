@@ -1,7 +1,10 @@
 const dictCache = { fr: null, en: null };
+let lastPwd = "";
 
 function randInt(maxExclusive) {
-	return Math.floor(Math.random() * maxExclusive);
+	const arr = new Uint32Array(1);
+	crypto.getRandomValues(arr);
+	return arr[0] % maxExclusive;
 }
 
 function capitalizeFirst(str) {
@@ -81,6 +84,7 @@ async function generate() {
 		const chosen = pickUnique(words, count);
 		const pwd = buildPassword(chosen, sep, addNums, addCaps);
 
+		lastPwd = pwd;
 		document.getElementById("out").textContent = pwd;
 
 		updateStats(pwd, words.length, count, addNums, addCaps);
@@ -89,6 +93,8 @@ async function generate() {
 	} catch (e) {
 		status.textContent = e.message;
 		document.getElementById("out").textContent = "Erreur de chargement du dictionnaire.";
+		setPwdVisible(true);
+		lastPwd = "";
 		return "";
 	}
 }
@@ -97,8 +103,8 @@ async function copyOut() {
 	const status = document.getElementById("status");
 	status.textContent = "";
 
-	const pwd = document.getElementById("out").textContent;
-	if (!pwd || pwd === "..." || pwd.startsWith("Erreur")) {
+	const pwd = lastPwd;
+	if (!pwd) {
 		status.textContent = "Rien à copier.";
 		return;
 	}
@@ -110,6 +116,18 @@ async function copyOut() {
 	} catch {
 		status.textContent = "Copie impossible (permissions navigateur).";
 	}
+}
+
+function setPwdVisible(visible) {
+	const out = document.getElementById("out");
+	const bouton = document.getElementById("cacherpwd");
+	out.classList.toggle("hiddentext", !visible);
+	bouton.textContent = visible ? "Cacher" : "Révéler";
+}
+
+function togglePwd() {
+	const out = document.getElementById("out");
+	setPwdVisible(out.classList.contains("hiddentext"));
 }
 
 // Entropy stuff
@@ -139,11 +157,12 @@ function entropyBits(wordCount, wordsPicked, addNums, addCaps) {
 function updateStats(pwd, dictSize, count, addNums, addCaps) {
 	document.getElementById("len").textContent = pwd.length;
 	const bits = entropyBits(dictSize, count, addNums, addCaps);
-	document.getElementById("entropy").textContent = Math.floor(bits.toFixed(1));
+	document.getElementById("entropy").textContent = Math.floor(bits);
 }
 
 document.getElementById("gen").addEventListener("click", generate);
 document.getElementById("copy").addEventListener("click", copyOut);
+document.getElementById("cacherpwd").addEventListener("click", togglePwd);
 for (const el of document.querySelectorAll('input, select')) el.addEventListener("change", generate);
 
 // GO!

@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="150" viewBox="0 0 320 150">
+  <rect width="320" height="150" rx="10" fill="#1a73e8"/>
+
+  <!-- Pigeon body -->
+  <ellipse cx="110" cy="85" rx="38" ry="28" fill="#fff"/>
+  <!-- Pigeon head -->
+  <circle cx="148" cy="62" r="18" fill="#fff"/>
+  <!-- Wing -->
+  <ellipse cx="95" cy="90" rx="28" ry="14" fill="#d0e4ff" transform="rotate(-15 95 90)"/>
+  <!-- Eye -->
+  <circle cx="155" cy="58" r="4" fill="#1a73e8"/>
+  <circle cx="156" cy="57" r="1.5" fill="#fff"/>
+  <!-- Beak -->
+  <polygon points="166,62 178,65 166,68" fill="#f4a100"/>
+  <!-- Tail -->
+  <polygon points="72,85 55,75 58,95" fill="#d0e4ff"/>
+  <!-- Leg -->
+  <line x1="108" y1="113" x2="105" y2="128" stroke="#ccc" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="118" y1="113" x2="121" y2="128" stroke="#ccc" stroke-width="2.5" stroke-linecap="round"/>
+
+  <!-- Key icon -->
+  <circle cx="210" cy="75" r="16" fill="none" stroke="#fff" stroke-width="4"/>
+  <rect x="222" y="73" width="28" height="7" rx="2" fill="#fff"/>
+  <rect x="244" y="80" width="6" height="8" rx="1" fill="#fff"/>
+  <rect x="235" y="80" width="6" height="6" rx="1" fill="#fff"/>
+
+  <!-- Text -->
+  <text x="160" y="135" font-family="system-ui, Arial, sans-serif" font-size="15" font-weight="700" fill="#fff" text-anchor="middle" opacity="0.85">PasswordPigeon</text>
+</svg>
