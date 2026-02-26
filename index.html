@@ -35,16 +35,6 @@
 
 		<div class="panel">
 			<div class="group">
-				<div class="toggle-row toggle-row--split" role="radiogroup" aria-label="Patron de chiffres">
-					<input type="radio" name="pattern" id="p-end-double" value="end-double" checked>
-					<label class="pill" for="p-end-double">Mot·Mot·Mot·##</label>
-					
-					<input type="radio" name="pattern" id="p-per-word" value="per-word">
-					<label class="pill" for="p-per-word">Mot#·Mot#·Mot#</label>
-				</div>
-			</div>
-
-			<div class="group">
 				<div class="label">Dictionnaire</div>
 				<div class="toggle-row" role="radiogroup" aria-label="Dictionnaire">
 					<input type="radio" name="lang" id="lang-fr" value="fr" checked>
@@ -106,6 +96,16 @@
 				<div class="toggle-row" aria-label="Options">
 					<input type="checkbox" id="caps" checked>
 					<label class="pill" for="caps">Majuscule initiale</label>
+
+					<input type="checkbox" id="use-digits" checked>
+					<label class="pill" for="use-digits">Chiffres</label>
+				</div>
+				<div class="toggle-row toggle-row--split digit-pattern-row" id="digit-pattern-row" role="radiogroup" aria-label="Position des chiffres" style="display:flex; margin-top: 0.5rem;">
+					<input type="radio" name="pattern" id="p-end-double" value="end-double" checked>
+					<label class="pill" for="p-end-double">Mot·Mot·Mot·##</label>
+
+					<input type="radio" name="pattern" id="p-per-word" value="per-word">
+					<label class="pill" for="p-per-word">Mot#·Mot#·Mot#</label>
 				</div>
 			</div>
 

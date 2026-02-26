@@ -1,5 +1,6 @@
 import { loadDict } from "./dict.js";
 import { pickUnique, buildPassword, entropyBits } from "./generator.js";
+import { applyUrlParams } from "./params.js";
 
 let lastPwd = "";
 
@@ -15,7 +16,8 @@ async function generate() {
 	const lang = getRadioValue("lang");
 	const count = Number(getRadioValue("count"));
 	const sep = getRadioValue("sep");
-	const pattern = getRadioValue("pattern");
+	const useDigits = document.getElementById("use-digits").checked;
+	const pattern = useDigits ? (getRadioValue("pattern") ?? "end-double") : "none";
 	const addCaps = document.getElementById("caps").checked;
 
 	try {
@@ -78,7 +80,16 @@ function updateStats(pwd, dictSize, count, pattern, addCaps) {
 document.getElementById("gen").addEventListener("click", generate);
 document.getElementById("copy").addEventListener("click", copyOut);
 document.getElementById("cacherpwd").addEventListener("click", togglePwd);
+
+document.getElementById("use-digits").addEventListener("change", function () {
+	const row = document.getElementById("digit-pattern-row");
+	row.style.display = this.checked ? "flex" : "none";
+});
+
 for (const el of document.querySelectorAll('input, select')) el.addEventListener("change", generate);
+
+// Apply URL params before first generation
+applyUrlParams();
 
 // GO!
 generate();

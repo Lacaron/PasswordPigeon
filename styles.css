@@ -112,6 +112,21 @@ h1 {
   color: #fff;
 }
 
+/* Locked via URL param */
+.toggle-row input:disabled+.pill {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.toggle-row input:disabled:checked+.pill {
+  opacity: 0.75;
+  cursor: not-allowed;
+  background: #1a73e8;
+  border-color: #111;
+  color: #fff;
+}
+
 .pill:hover {
   transform: translateY(-1px);
   background: #155cb0;
