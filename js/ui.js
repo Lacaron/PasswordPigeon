@@ -77,9 +77,36 @@ function updateStats(pwd, dictSize, count, pattern, addCaps) {
 	document.getElementById("entropy").textContent = Math.floor(bits);
 }
 
+const SEP_ALIAS = { ' ': 'space', '-': '-', '_': '_', '+': '+', '=': '=', ',': ',', '.': '.' };
+
+function buildParamUrl() {
+	const p = new URLSearchParams();
+	p.set('lang',    getRadioValue('lang') ?? 'fr');
+	p.set('count',   getRadioValue('count') ?? '3');
+	p.set('sep',     SEP_ALIAS[getRadioValue('sep')] ?? 'space');
+	const useDigits = document.getElementById('use-digits').checked;
+	p.set('digits',  useDigits);
+	if (useDigits) p.set('pattern', getRadioValue('pattern') ?? 'end-double');
+	p.set('caps',    document.getElementById('caps').checked);
+	p.set('reveal',  !document.getElementById('out').classList.contains('hiddentext'));
+	return `${location.origin}${location.pathname}?${p.toString()}`;
+}
+
+async function copyParamUrl() {
+	const status = document.getElementById('url-copy-status');
+	try {
+		await navigator.clipboard.writeText(buildParamUrl());
+		status.textContent = 'Copié.';
+		setTimeout(() => status.textContent = '', 1200);
+	} catch {
+		status.textContent = 'Copie impossible (permissions navigateur).';
+	}
+}
+
 document.getElementById("gen").addEventListener("click", generate);
 document.getElementById("copy").addEventListener("click", copyOut);
 document.getElementById("cacherpwd").addEventListener("click", togglePwd);
+document.getElementById("copy-url").addEventListener("click", copyParamUrl);
 
 document.getElementById("use-digits").addEventListener("change", function () {
 	const row = document.getElementById("digit-pattern-row");
@@ -89,7 +116,13 @@ document.getElementById("use-digits").addEventListener("change", function () {
 for (const el of document.querySelectorAll('input, select')) el.addEventListener("change", generate);
 
 // Apply URL params before first generation
-applyUrlParams();
+const ignoredParams = applyUrlParams();
+if (ignoredParams.length > 0) {
+	const warn = document.createElement('div');
+	warn.className = 'url-warning';
+	warn.textContent = `Paramètre(s) URL ignoré(s) : ${ignoredParams.join(', ')}`;
+	document.body.appendChild(warn);
+}
 
 // GO!
 generate();
