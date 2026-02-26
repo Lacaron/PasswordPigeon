@@ -8,8 +8,6 @@
 	<link rel="stylesheet" href="styles.css">
 
 </head>
-<script src="script.js" defer></script>
-<script src="ui.js" defer></script>
 
 <body>
 	<div class="app">
@@ -23,24 +21,29 @@
 			<div class="pwd-box">
 				<div id="out" class="pwd hiddentext">...</div>
 				<button id="cacherpwd" type="button">Révéler</button>
-
 			</div>
 			<div class="actions">
 				<button id="gen">Générer un nouveau mot de passe</button>
 				<button id="copy" type="button">Copier</button>
 				<span id="status" class="status"></span>
 			</div>
-		</div>
-
-		<div class="panel">
-			<div class="label">Stats</div>
-			<div class="toggle-row" style="gap: 1rem;">
+			<div class="toggle-row" style="gap: 1rem; margin-top: 0.75rem;">
 				<div><strong>Longueur :</strong> <span id="len">0</span></div>
 				<div><strong>Entropie :</strong> <span id="entropy">0</span> bits</div>
 			</div>
 		</div>
 
 		<div class="panel">
+			<div class="group">
+				<div class="toggle-row toggle-row--split" role="radiogroup" aria-label="Patron de chiffres">
+					<input type="radio" name="pattern" id="p-per-word" value="per-word" checked>
+					<label class="pill" for="p-per-word">Mot#·Mot#·Mot#</label>
+
+					<input type="radio" name="pattern" id="p-end-double" value="end-double">
+					<label class="pill" for="p-end-double">Mot·Mot·Mot·##</label>
+				</div>
+			</div>
+
 			<div class="group">
 				<div class="label">Dictionnaire</div>
 				<div class="toggle-row" role="radiogroup" aria-label="Dictionnaire">
@@ -75,7 +78,10 @@
 			<div class="group">
 				<div class="label">Séparateur</div>
 				<div class="toggle-row" role="radiogroup" aria-label="Séparateur">
-					<input type="radio" name="sep" id="s-" value="-" checked>
+					<input type="radio" name="sep" id="s-space" value=" " checked>
+					<label class="pill" for="s-space">Espace</label>
+
+					<input type="radio" name="sep" id="s-" value="-">
 					<label class="pill" for="s-">-</label>
 
 					<input type="radio" name="sep" id="s_" value="_">
@@ -98,10 +104,6 @@
 			<div class="group">
 				<div class="label">Options</div>
 				<div class="toggle-row" aria-label="Options">
-					<!-- checked = activé par défaut -->
-					<input type="checkbox" id="nums" checked>
-					<label class="pill" for="nums">Chiffre après chaque mot (0–9)</label>
-
 					<input type="checkbox" id="caps" checked>
 					<label class="pill" for="caps">Majuscule initiale</label>
 				</div>
@@ -114,6 +116,7 @@
 
 
 	</div>
+	<script src="js/ui.js" type="module"></script>
 </body>
 
 

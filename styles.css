@@ -74,6 +74,14 @@ h1 {
   align-items: center;
 }
 
+/* 50/50 split — utilisé pour le groupe Patron */
+.toggle-row--split {
+  flex-wrap: nowrap;
+}
+.toggle-row--split .pill {
+  flex: 1;
+}
+
 /* Hide native radio/checkbox, keep accessible */
 .toggle-row input[type="radio"],
 .toggle-row input[type="checkbox"] {
@@ -188,6 +196,20 @@ button.secondary {
 
   .pill {
     padding: 0.5rem 0.75rem;
+  }
+
+  .pwd-box {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .toggle-row--split {
+    flex-direction: column;
+  }
+
+  .toggle-row--split .pill {
+    width: 100%;
+    text-align: center;
   }
 
   button {
