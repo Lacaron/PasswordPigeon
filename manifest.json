@@ -1,0 +1,16 @@
+{
+  "name": "Générateur de mot de passe",
+  "short_name": "PasswordPigeon",
+  "description": "Générateur de mots de passe mémorisables, 100% hors-ligne.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f6f7f8",
+  "theme_color": "#1a73e8",
+  "icons": [
+    {
+      "src": "logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
