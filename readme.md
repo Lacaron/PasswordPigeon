@@ -1,60 +1,95 @@
-# Générateur de mots de passe par mots
+# PasswordPigeon
 
-Ce projet est un **générateur de mots de passe 100 % côté navigateur**, sans backend, basé sur des dictionnaires de mots français et anglais.
+Générateur de mots de passe basé sur des mots réels — 100 % côté navigateur, sans backend ni dépendance externe.
 
-Il permet de générer des mots de passe lisibles et robustes en combinant plusieurs mots avec différentes options (séparateur, chiffres, majuscule, etc.).
+L'idée : combiner plusieurs mots de dictionnaire avec un patron de chiffres pour produire des mots de passe **lisibles et robustes**, plus faciles à retenir qu'une suite de caractères aléatoires.
+
+---
+
+## Démo rapide
+
+```
+Cheval7·Maison·Arbre3   ← Patron A : chiffre après chaque mot
+Cheval·Maison·Arbre·42  ← Patron B : nombre en fin
+```
 
 ---
 
 ## Fonctionnalités
 
-- Génération de mots de passe à partir de mots réels
-- Choix de la langue :
-  - Français
-  - Anglais
-- Nombre de mots configurable (3 à 6)
-- Séparateur personnalisable (`- _ + = , .`)
-- Ajout optionnel d’un chiffre après chaque mot
-- Majuscule sur la première lettre de chaque mot (option activée par défaut)
-- Affichage de statistiques :
-  - Longueur du mot de passe
-  - Estimation de l’entropie (en bits)
-- Application entièrement statique (HTML / CSS / JavaScript)
+| Option | Description |
+|---|---|
+| **Patron** | Chiffre après chaque mot (0–9), ou nombre (0–99) en fin de mot de passe |
+| **Dictionnaire** | Français ou Anglais |
+| **Nombre de mots** | De 2 à 6 mots |
+| **Séparateur** | `Espace`, `-`, `_`, `+`, `=`, `,`, `.` |
+| **Majuscule initiale** | Capitalise la première lettre de chaque mot |
+| **Stats** | Longueur et entropie estimée affichées en temps réel |
 
 ---
 
-## Sources des dictionnaires
+## Lancer le projet
 
-- merci Philippe
----
+Aucun build requis. Il suffit d'un serveur HTTP local (les ES modules ne fonctionnent pas en `file://`).
 
-## Notes sur la sécurité et l’entropie
+**Option 1 — Python (inclus sur la plupart des systèmes)**
+```bash
+python -m http.server
+```
 
-- L’entropie affichée est une **estimation indicative**, calculée à partir :
-  - de la taille du dictionnaire filtré,
-  - du nombre de mots sélectionnés,
-  - de l’ajout éventuel de chiffres après chaque mot.
+**Option 2 — Node.js**
+```bash
+npx serve .
+```
 
-- Cette estimation est **imparfaite et inexacte par nature**, car elle ne tient pas compte de nombreux facteurs réels, notamment :
-  - la prévisibilité humaine (choix d’options similaires),
-  - les modèles d’attaque avancés,
-  - l’absence de randomisation sur certains paramètres (ex. capitalisation fixe).
+**Option 3 — `execute.cmd`** (Windows, inclus dans le projet)
 
-- Malgré ces limites, le calcul de l’entropie est volontairement affiché afin de :
-  - **sensibiliser les utilisateurs à l’impact des options de génération**,
-  - **encourager l’utilisation de paramètres plus robustes** (plus de mots, chiffres activés, etc.),
-  - fournir un repère simple et compréhensible plutôt qu’un faux sentiment de sécurité.
-
-- Les séparateurs et la capitalisation déterministe n’ajoutent pas d’entropie.
-- Ce générateur vise à produire des mots de passe **lisibles mais robustes**, et ne remplace pas un gestionnaire de mots de passe cryptographique.
+Ouvrir ensuite [http://localhost:8000](http://localhost:8000) dans le navigateur.
 
 ---
 
-## Exécution
+## Architecture
 
-Aucun backend requis.
+Le projet est découpé en trois couches distinctes :
 
-Le projet peut être exécuté via :
-- un serveur statique local (ex. `python -m http.server`)
-- ou un hébergement statique (GitHub Pages, Netlify, etc.)
+```
+/
+├── index.html          Interface utilisateur (HTML)
+├── styles.css          Mise en forme
+├── logo.svg
+├── js/
+│   ├── dict.js         Couche données  — chargement et cache du dictionnaire
+│   ├── generator.js    Couche logique  — génération aléatoire, entropie
+│   └── ui.js           Couche UI       — événements DOM, affichage
+└── data/
+    ├── mots-fr.txt     Dictionnaire français
+    └── mots-en.txt     Dictionnaire anglais
+```
 
+### `dict.js` — Couche dictionnaire
+Charge le fichier `.txt` correspondant à la langue choisie, filtre les mots (4–10 caractères), retire les accents, et met le résultat en cache pour éviter les rechargements.
+
+### `generator.js` — Couche logique
+Contient toute la logique de génération, indépendante du DOM :
+- Tirage aléatoire cryptographiquement sûr (`crypto.getRandomValues`)
+- Construction du mot de passe selon le patron choisi
+- Calcul d'entropie estimée
+
+### `ui.js` — Couche interface
+Lit les options depuis le DOM, orchestre les appels à `dict.js` et `generator.js`, et met à jour l'affichage. Aucune logique métier.
+
+---
+
+## Note sur l'entropie
+
+L'entropie affichée est une **estimation indicative** basée sur la taille du dictionnaire filtré, le nombre de mots tirés et le patron de chiffres choisi.
+
+Elle est volontairement imparfaite : elle ne tient pas compte de la prévisibilité humaine, des modèles d'attaque avancés, ni du fait que la capitalisation est déterministe. Son rôle est d'**illustrer l'impact des options** sur la robustesse du mot de passe, pas de fournir une valeur cryptographique exacte.
+
+Ce générateur ne remplace pas un gestionnaire de mots de passe.
+
+---
+
+## Licence
+
+[MIT](LICENSE) — libre d'utilisation, de modification et de redistribution.
