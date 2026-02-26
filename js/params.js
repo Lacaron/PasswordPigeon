@@ -6,17 +6,17 @@ const VALID = {
 	pattern: ['end-double', 'per-word'],
 };
 
-function lockRadioGroup(name, value) {
+function applyRadioGroup(name, value, shouldLock) {
 	for (const el of document.querySelectorAll(`input[name="${name}"]`)) {
 		el.checked  = el.value === value;
-		el.disabled = true;
+		if (shouldLock) el.disabled = true;
 	}
 }
 
-function lockCheckbox(id, value) {
+function applyCheckbox(id, value, shouldLock) {
 	const el = document.getElementById(id);
 	el.checked  = value;
-	el.disabled = true;
+	if (shouldLock) el.disabled = true;
 }
 
 // Returns an array of ignored param strings (e.g. ['lang="klingon"', 'count="99"'])
@@ -24,22 +24,29 @@ export function applyUrlParams() {
 	const p = new URLSearchParams(window.location.search);
 	const ignored = [];
 
+	// lock=false désactive le verrouillage (les valeurs sont quand même appliquées)
+	const lockRaw = p.get('lock');
+	const shouldLock = lockRaw !== 'false';
+	if (lockRaw !== null && lockRaw !== 'true' && lockRaw !== 'false') {
+		ignored.push(`lock="${lockRaw}"`);
+	}
+
 	const lang = p.get('lang');
 	if (lang !== null) {
-		if (VALID.lang.includes(lang)) lockRadioGroup('lang', lang);
+		if (VALID.lang.includes(lang)) applyRadioGroup('lang', lang, shouldLock);
 		else ignored.push(`lang="${lang}"`);
 	}
 
 	const count = p.get('count');
 	if (count !== null) {
-		if (VALID.count.includes(count)) lockRadioGroup('count', count);
+		if (VALID.count.includes(count)) applyRadioGroup('count', count, shouldLock);
 		else ignored.push(`count="${count}"`);
 	}
 
 	const sepRaw = p.get('sep');
 	if (sepRaw !== null) {
 		const sepVal = VALID.sep[sepRaw] ?? null;
-		if (sepVal !== null) lockRadioGroup('sep', sepVal);
+		if (sepVal !== null) applyRadioGroup('sep', sepVal, shouldLock);
 		else ignored.push(`sep="${sepRaw}"`);
 	}
 
@@ -47,7 +54,7 @@ export function applyUrlParams() {
 	if (digits !== null) {
 		if (digits === 'true' || digits === 'false') {
 			const on = digits === 'true';
-			lockCheckbox('use-digits', on);
+			applyCheckbox('use-digits', on, shouldLock);
 			document.getElementById('digit-pattern-row').style.display = on ? 'flex' : 'none';
 		} else {
 			ignored.push(`digits="${digits}"`);
@@ -56,13 +63,13 @@ export function applyUrlParams() {
 
 	const pattern = p.get('pattern');
 	if (pattern !== null) {
-		if (VALID.pattern.includes(pattern)) lockRadioGroup('pattern', pattern);
+		if (VALID.pattern.includes(pattern)) applyRadioGroup('pattern', pattern, shouldLock);
 		else ignored.push(`pattern="${pattern}"`);
 	}
 
 	const caps = p.get('caps');
 	if (caps !== null) {
-		if (caps === 'true' || caps === 'false') lockCheckbox('caps', caps === 'true');
+		if (caps === 'true' || caps === 'false') applyCheckbox('caps', caps === 'true', shouldLock);
 		else ignored.push(`caps="${caps}"`);
 	}
 

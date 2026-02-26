@@ -79,7 +79,7 @@ function updateStats(pwd, dictSize, count, pattern, addCaps) {
 
 const SEP_ALIAS = { ' ': 'space', '-': '-', '_': '_', '+': '+', '=': '=', ',': ',', '.': '.' };
 
-function buildParamUrl() {
+function buildParamUrl(lock) {
 	const p = new URLSearchParams();
 	p.set('lang',    getRadioValue('lang') ?? 'fr');
 	p.set('count',   getRadioValue('count') ?? '3');
@@ -89,13 +89,14 @@ function buildParamUrl() {
 	if (useDigits) p.set('pattern', getRadioValue('pattern') ?? 'end-double');
 	p.set('caps',    document.getElementById('caps').checked);
 	p.set('reveal',  !document.getElementById('out').classList.contains('hiddentext'));
+	p.set('lock',    lock);
 	return `${location.origin}${location.pathname}?${p.toString()}`;
 }
 
-async function copyParamUrl() {
+async function copyParamUrl(lock) {
 	const status = document.getElementById('url-copy-status');
 	try {
-		await navigator.clipboard.writeText(buildParamUrl());
+		await navigator.clipboard.writeText(buildParamUrl(lock));
 		status.textContent = 'Copié.';
 		setTimeout(() => status.textContent = '', 1200);
 	} catch {
@@ -106,17 +107,27 @@ async function copyParamUrl() {
 document.getElementById("gen").addEventListener("click", generate);
 document.getElementById("copy").addEventListener("click", copyOut);
 document.getElementById("cacherpwd").addEventListener("click", togglePwd);
-document.getElementById("copy-url").addEventListener("click", copyParamUrl);
+document.getElementById("copy-url-locked").addEventListener("click", () => copyParamUrl(true));
+document.getElementById("copy-url-free").addEventListener("click",   () => copyParamUrl(false));
+document.getElementById("remove-lock").addEventListener("click", () => {
+	for (const el of document.querySelectorAll('.toggle-row input:disabled')) {
+		el.disabled = false;
+	}
+	document.getElementById("remove-lock").disabled = true;
+});
 
 document.getElementById("use-digits").addEventListener("change", function () {
 	const row = document.getElementById("digit-pattern-row");
 	row.style.display = this.checked ? "flex" : "none";
 });
 
-for (const el of document.querySelectorAll('input, select')) el.addEventListener("change", generate);
+for (const el of document.querySelectorAll('.panel:not(.advanced-panel) input, select')) el.addEventListener("change", generate);
 
 // Apply URL params before first generation
 const ignoredParams = applyUrlParams();
+const hasLocks = document.querySelectorAll('.toggle-row input:disabled').length > 0;
+document.getElementById("remove-lock").disabled = !hasLocks;
+
 if (ignoredParams.length > 0) {
 	const warn = document.createElement('div');
 	warn.className = 'url-warning';

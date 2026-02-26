@@ -154,6 +154,12 @@ button {
   transition: transform 120ms ease, opacity 120ms ease;
 }
 
+button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
 button:hover {
   transform: translateY(-1px);
   background: #155cb0;
@@ -207,6 +213,12 @@ button.secondary {
 @media (max-width: 480px) {
   .app {
     padding: 1.1rem;
+  }
+
+  .logo {
+    width: 100%;
+    height: auto;
+    border-radius: 0;
   }
 
   .pill {

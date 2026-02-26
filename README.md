@@ -14,10 +14,11 @@ Générateur de mots de passe basé sur des mots mémorisables (style diceware),
 
 ## Paramètres URL
 
-Il est possible de pré-configurer et verrouiller des options via l'URL. Les contrôles verrouillés sont visuellement désactivés et ne peuvent pas être modifiés par l'utilisateur.
+Il est possible de pré-configurer des options via l'URL. Par défaut, les contrôles sont verrouillés (visuellement désactivés). Utiliser `lock=false` pour appliquer les valeurs sans verrouiller l'interface.
 
-| Paramètre | Valeurs acceptées | Défaut | Verrouillable |
-|-----------|-------------------|--------|---------------|
+| Paramètre | Valeurs acceptées | Défaut | Affecté par `lock` |
+|-----------|-------------------|--------|---------------------|
+| `lock` | `true` \| `false` | `true` | — |
 | `lang` | `fr` \| `en` | `fr` | oui |
 | `count` | `2` `3` `4` `5` `6` | `3` | oui |
 | `sep` | `space` \| `-` \| `_` \| `+` \| `=` \| `,` \| `.` | `space` | oui |
@@ -46,7 +47,10 @@ index.html?digits=false&sep=-
 index.html?reveal=true
 
 # Tout verrouillé pour un déploiement spécifique
-index.html?lang=fr&count=3&sep=space&digits=true&pattern=per-word&caps=true&reveal=true
+index.html?lang=fr&count=3&sep=space&digits=true&pattern=per-word&caps=true&reveal=true&lock=true
+
+# Valeurs pré-remplies sans verrouillage (l'utilisateur peut tout changer)
+index.html?lang=en&count=4&lock=false
 ```
 
 ## Structure
